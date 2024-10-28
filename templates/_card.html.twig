@@ -1,10 +1,10 @@
-<div class=" card m-3 border rounded bg-white row col-xxl-2 col-xl-3 col-lg-4 col-12">
+<div class=" card m-3 border rounded bg-white row col-xxl-2 col-xl-3 col-lg-4 col-5">
     <div class="card-body">
         <h5 class="card-title">
-            {{ (job.recruiter | default('job_recruiter') ) }}
+            {{ (job.recruiter | default('job_recruiter') |title  ) }}
         </h5>
         <h6 class="card-subtitle mb-2 text-body-secondary">
-            {{ job.title  | default('job_title') }}
+            {{ job.title  | default('job_title') |upper }}
         </h6>
         <p class="card-text">
             {{ job.action_name  | default('job_action_name' ) }}
