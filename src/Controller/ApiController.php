@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Models\ApiJob;
 use App\Repository\UserRepository;
 use App\Service\ApiService;
 use DateTime;
@@ -63,7 +64,7 @@ final class ApiController extends AbstractController
             'location' => $apiSettings->getCity()->getZipCode(),
             'radius' => $apiSettings->getDistance(),
             "companysearch" => "false",
-            "page"=> "1",
+            "page" => "1",
         ];
 
         // Calcul du nombre de secondes jusqu'à minuit
@@ -87,7 +88,7 @@ final class ApiController extends AbstractController
             // Retourner les paramètres et la réponse de l'API
             return [
                 'params' => $params,
-                'response' => ['azduna' => $adzunaJobResponseData, 'franceTravail' => $franceTravailJobResponseData, 'jooble'=>$joobleJobs],
+                'response' => ['azduna' => $adzunaJobResponseData, 'franceTravail' => $franceTravailJobResponseData, 'jooble' => $joobleJobs],
             ];
         });
 
@@ -96,71 +97,81 @@ final class ApiController extends AbstractController
             // Si les paramètres ont changé, faire une nouvelle requête API
             $cachedData = [
                 'params' => $params,
-                'response' => ['azduna' => $apiService->getAdzunaJobs($adzunaParams, $apiSettings->getCountry()), 'franceTravail' => $apiService->getFranceTravailJobs($franceTravailParams), 'jooble'=> $apiService->getJoobleJobs($joobleParams)],
+                'response' => ['azduna' => $apiService->getAdzunaJobs($adzunaParams, $apiSettings->getCountry()), 'franceTravail' => $apiService->getFranceTravailJobs($franceTravailParams), 'jooble' => $apiService->getJoobleJobs($joobleParams)],
             ];
 
             // Pas besoin de mettre à jour manuellement le cache : la prochaine requête appellera automatiquement l'API si nécessaire
         }
 
-        $noInfoStr = 'Non renseigné';
         // Récupérer la réponse des données en cache
         $jobResponseData = $cachedData['response'];
         $adzunaJobResults = array_map(
-            function ($job) use ($noInfoStr) {
-                $created = new DateTime($job['created']);
-                return [
-                    'source' => 'Adzuna',
-                    'company' => $job['company']['display_name'] ?? $noInfoStr,
-                    'location' => explode(',', $job['location']['display_name'])[0] ?? $noInfoStr,
-                    'description' => $job['description'] ?? $noInfoStr,
-                    'title' => $job['title'] ?? $noInfoStr,
-                    'link' => $job['redirect_url'] ?? '',
-                    'created' => $created->format('d/m/y') ?? $noInfoStr,
-                    'id' => $job['id']
-                ];
+            function ($job) {
+                $apiJob  = new ApiJob;
+                $apiJob
+                    ->setSource('Adzuna')
+                    ->setTitle($job['title']  ??  $apiJob->getNoInfoStr())
+                    ->setCompany($job['company']['display_name'] ?? $apiJob->getNoInfoStr())
+                    ->setLocation( explode(',', $job['location']['display_name'])[0] ?? $apiJob->getNoInfoStr())
+                    ->setDescription($job['description'] ?? $apiJob->getNoInfoStr())
+                    ->setLink($job['redirect_url'] ?? '')
+                    ->setCreated($job['created'])
+                    ->setId($job['id'])
+                    ->setTypeContrat($apiJob->getNoInfoStr())
+                    ;
+
+                return $apiJob->getJobArray();
             },
             $jobResponseData['azduna']['results']
         );
         $franceTravailJobResults = array_map(function ($job) {
-            $created = new DateTime($job['dateCreation']);
-            $company = 'non renseigné';
-
-            if (isset($job['entreprise']['nom'])) {
-                $company = $job['entreprise']['nom'];
-            }
+            $apiJob  = new ApiJob;
 
             $link = 'https://candidat.francetravail.fr/offres/recherche/detail/' . $job['id'];
             if (isset($job['contact']['urlPostulation'])) {
                 $link = $job['contact']['urlPostulation'];
             }
 
-            return [
-                'source' => 'France travail',
-                'company' => $company,
-                'location' => substr($job['lieuTravail']['libelle'], 4),
-                'type_contrat' => $job['typeContratLibelle'],
-                'description' => $job['description'],
-                'title' => $job['intitule'],
-                'link' => $link,
-                'created' => $created->format('d/m/y'),
-                'id' => $job['id']
-            ];
+            $company = $apiJob->getNoInfoStr();
+
+            if (isset($job['entreprise']['nom'])) {
+                $company = $job['entreprise']['nom'];
+            }
+            $apiJob
+                ->setSource('France travail')
+                ->setTitle($job['intitule']  ??  $apiJob->getNoInfoStr())
+                ->setCompany( $company )
+                ->setLocation( substr($job['lieuTravail']['libelle'], 4)  ?? $apiJob->getNoInfoStr())
+                ->setDescription($job['description'] ?? $apiJob->getNoInfoStr())
+                ->setLink($link)
+                ->setCreated($job['dateCreation'])
+                ->setId($job['id'])
+                ->setTypeContrat($job['typeContratLibelle'] ??  $apiJob->getNoInfoStr())
+                ;
+
+            return $apiJob->getJobArray();
+
         }, $jobResponseData['franceTravail']['resultats']);
 
 
-        $joobleResults = array_map(function ($job) {
-            $created = new DateTime($job['updated']);
+        $joobleResults = array_map(function ($job)  {
+            $apiJob  = new ApiJob;
 
-            return [
-                'source' => 'Jooble',
-                'company' => $job['company'],
-                'description' => $job['snippet'],
-                'title' => $job['title'],
-                'location' =>  $job['location'],
-                'link' =>  $job['link'],
-                'type_contrat' => $job['type'],
-                'created' => $created->format('d/m/y')
-            ];
+            dump($job['type']);
+            $apiJob
+            ->setSource('Jooble')
+            ->setTitle( $job['title']  ??  $apiJob->getNoInfoStr())
+            ->setCompany( $job['company'] ?? $apiJob->getNoInfoStr())
+            ->setLocation( $job['location'] ?? $apiJob->getNoInfoStr())
+            ->setDescription($job['snippet']  ?? $apiJob->getNoInfoStr())
+            ->setLink($link ?? '')
+            ->setCreated($job['updated'])
+            ->setId($job['id'])
+            ->setTypeContrat($job['type'] ??  $apiJob->getNoInfoStr())
+            ;
+
+            return $apiJob->getJobArray();
+
         }, $jobResponseData['jooble']['jobs']);
 
         // Rendu du template avec les résultats
