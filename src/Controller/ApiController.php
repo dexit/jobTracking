@@ -128,6 +128,7 @@ final class ApiController extends AbstractController
             $apiJob  = new ApiJob;
 
             $link = 'https://candidat.francetravail.fr/offres/recherche/detail/' . $job['id'];
+            
             if (isset($job['contact']['urlPostulation'])) {
                 $link = $job['contact']['urlPostulation'];
             }
@@ -156,8 +157,6 @@ final class ApiController extends AbstractController
 
         $joobleResults = array_map(function ($job)  {
             $apiJob  = new ApiJob;
-
-            dump($job['type']);
             $apiJob
             ->setSource('Jooble')
             ->setTitle( $job['title']  ??  $apiJob->getNoInfoStr())
