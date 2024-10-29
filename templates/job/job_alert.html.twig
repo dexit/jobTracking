@@ -59,7 +59,7 @@
                                     </p>
                                 {% endif %}
                             </div>
-                            <div id="job-list-adzuna" class='d-flex justify-content-between flex-wrap'>
+                            <div id="job-list-adzuna" class='d-flex flex-wrap'>
                                 {% for job in adzunaJobResults %}
                                     {{ include('_job_alert_card.html.twig') }}
                                 {% endfor %}
@@ -72,7 +72,7 @@
 
                             <div class="search-container p-3">
                                 <input type="text" id="search-input-ft" class="form-control" placeholder="Rechercher"></div>
-                                <div id="job-list-ft" class='d-flex justify-content-between flex-wrap'>
+                                <div id="job-list-ft" class='d-flex flex-wrap'>
                                     {% for job in franceTravailJobResults %}
                                         {{ include('_job_alert_card.html.twig') }}
                                     {% endfor %}
@@ -87,7 +87,7 @@
 
                             <div class="search-container p-3">
                                 <input type="text" id="search-input-jooble" class="form-control" placeholder="Rechercher"></div>
-                                <div id="job-list-jooble" class='d-flex justify-content-between flex-wrap'>
+                                <div id="job-list-jooble" class='d-flex flex-wrap'>
                                     {% for job in joobleResults %}
                                         {{ include('_job_alert_card.html.twig') }}
                                     {% endfor %}
