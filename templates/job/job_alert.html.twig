@@ -32,15 +32,16 @@
         </p>
 
         <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="france-travail-tab" data-bs-toggle="tab" data-bs-target="#france-travail-tab-pane" type="button" role="tab" aria-controls="france-travail-tab-pane" aria-selected="false">
+            <img class='logo' src="/assets/img/france_travail.webp" alt="France travail"></img>
+        </button>
+    </li>
             <li class="nav-item d-flex align-items-center" role="presentation">
-                <button class="nav-link active" id="adzuna-tab" data-bs-toggle="tab" data-bs-target="#adzuna-tab-pane" type="button" role="tab" aria-controls="adzuna-tab-pane" aria-selected="true">
+                <button class="nav-link " id="adzuna-tab" data-bs-toggle="tab" data-bs-target="#adzuna-tab-pane" type="button" role="tab" aria-controls="adzuna-tab-pane" aria-selected="true">
                     <img class='logo' src="/assets/img/adzuna.png" alt="Adzuna"></button>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="france-travail-tab" data-bs-toggle="tab" data-bs-target="#france-travail-tab-pane" type="button" role="tab" aria-controls="france-travail-tab-pane" aria-selected="false">
-                        <img class='logo' src="/assets/img/france_travail.webp" alt="France travail"></img>
-                    </button>
-                </li>
+   
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="jooble-tab" data-bs-toggle="tab" data-bs-target="#jooble-tab-pane" type="button" role="tab" aria-controls="jooble-tab-pane" aria-selected="false">
                         <img class='logo' src="/assets/img/jooble.png" alt='Jooble'></img>
@@ -48,7 +49,7 @@
                 </li>
             </ul>
             <div class="tab-content bg-white" id="myTabContent">
-                <div class="tab-pane fade show active bg-white " id="adzuna-tab-pane" role="tabpanel" aria-labelledby="adzuna-tab" tabindex="0">
+                <div class="tab-pane fade  bg-white " id="adzuna-tab-pane" role="tabpanel" aria-labelledby="adzuna-tab" tabindex="0">
                     <div class="bg-white">
 
                         <div class="search-container p-3">
@@ -67,42 +68,43 @@
 
                         </div>
                     </div>
-                    <div class="tab-pane fade  bg-white " id="france-travail-tab-pane" role="tabpanel" aria-labelledby="france-travail-tab" tabindex="0">
-                        <div class="bg-white">
+                </div>
+                <div class="tab-pane fade  show active bg-white " id="france-travail-tab-pane" role="tabpanel" aria-labelledby="france-travail-tab" tabindex="0">
+                    <div class="bg-white">
 
-                            <div class="search-container p-3">
-                                <input type="text" id="search-input-ft" class="form-control" placeholder="Rechercher"></div>
-                                <div id="job-list-ft" class='d-flex flex-wrap'>
-                                    {% for job in franceTravailJobResults %}
-                                        {{ include('_job_alert_card.html.twig') }}
-                                    {% endfor %}
-                                </div>
-
+                        <div class="search-container p-3">
+                            <input type="text" id="search-input-ft" class="form-control" placeholder="Rechercher"></div>
+                            <div id="job-list-ft" class='d-flex flex-wrap'>
+                                {% for job in franceTravailJobResults %}
+                                    {{ include('_job_alert_card.html.twig') }}
+                                {% endfor %}
                             </div>
+
                         </div>
                     </div>
+                </div>
 
-                    <div class="tab-pane fade  bg-white " id="jooble-tab-pane" role="tabpanel" aria-labelledby="jooble-tab" tabindex="0">
-                        <div class="bg-white">
+                <div class="tab-pane fade  bg-white " id="jooble-tab-pane" role="tabpanel" aria-labelledby="jooble-tab" tabindex="0">
+                    <div class="bg-white">
 
-                            <div class="search-container p-3">
-                                <input type="text" id="search-input-jooble" class="form-control" placeholder="Rechercher"></div>
-                                <div id="job-list-jooble" class='d-flex flex-wrap'>
-                                    {% for job in joobleResults %}
-                                        {{ include('_job_alert_card.html.twig') }}
-                                    {% endfor %}
-                                </div>
-
+                        <div class="search-container p-3">
+                            <input type="text" id="search-input-jooble" class="form-control" placeholder="Rechercher"></div>
+                            <div id="job-list-jooble" class='d-flex flex-wrap'>
+                                {% for job in joobleResults %}
+                                    {{ include('_job_alert_card.html.twig') }}
+                                {% endfor %}
                             </div>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <template id="cardTemplate">
-            {% include '/_job_alert_card.html.twig' with { job: {} } | raw %}
-        </template>
-        <script>
+    </div>
+    <template id="cardTemplate">
+        {% include '/_job_alert_card.html.twig' with { job: {} } | raw %}
+    </template>
+    <script>
                 function newJob(job) {
                 
             $.post({
@@ -115,5 +117,4 @@
             }
                 })}
             </script>
-    {% endblock %}
-    
+{% endblock %}

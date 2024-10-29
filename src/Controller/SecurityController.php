@@ -65,7 +65,6 @@ class SecurityController extends AbstractController
                 $htmlContent = $this->renderView('security/reset_password_email.html.twig', [
                     'resetLink' => $resetLink,
                 ]);
-                dump($htmlContent);
                 $emailService->sendHtmlEmail($user->getEmail(), 'Réinitialisation de votre mot de passe', $htmlContent);
 
             } 

@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Models\ApiJob;
+use App\Model\ApiJob;
 use App\Repository\UserRepository;
 use App\Service\ApiService;
 use DateTime;
