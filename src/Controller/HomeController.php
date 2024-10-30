@@ -8,6 +8,7 @@ use App\Entity\JobSearchSettings;
 use App\Entity\User;
 use App\Form\JobSearchSettingsType;
 use App\Form\CvType;
+use App\Repository\AddressBookRepository;
 use App\Repository\CityRepository;
 use App\Repository\JobRepository;
 use DateTime;
@@ -45,7 +46,7 @@ class HomeController extends AbstractController
 
 
     #[Route('/mon_espace', name: 'app_user_show')]
-    public function show(JobRepository $jobRepository, SerializerInterface $serializer, Security $security, EntityManagerInterface $entityManager, Request $request): Response
+    public function show(JobRepository $jobRepository, SerializerInterface $serializer, Security $security, EntityManagerInterface $entityManager, Request $request, AddressBookRepository $addressBookRepository, ): Response
     {
         $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $security->getUser()->getUserIdentifier()]);
 
@@ -85,11 +86,17 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('app_job_alert');
         }
 
+        $addressBooks = $addressBookRepository->findBy(['user' => $security->getUser()]);
+        $addressBooksJson = $serializer->serialize($addressBooks, 'json', ['groups' => ['address_book']] );
+
         return $this->render('home/my-space.html.twig', [
             'jobs' => $userJobs,
             'user' => $user,
             'formCV' => $formCV,
             'formApiSettings' => $formApiSettings,
+            'address_books_json' => $addressBooksJson,
+            'contacts'=>count(  $addressBooks )
+
 
         ]);
     }

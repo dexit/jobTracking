@@ -12,7 +12,7 @@
 
 {% block body %}
 
-  <div class="js-table-data" data-table-items="{{ jobs | json_encode }}"></div>
+  <div class="js-table-data" data-table-items="{{ jobs | json_encode }}" data-address-book="{{ address_books_json  }}"></div>
   <div class="my-3 bg-div">
 
     <div class="accordion" id="mySpaceAccordion">
@@ -147,27 +147,49 @@
             </div>
 
             <div class="d-flex justify-content-end">
-              <input type="submit" class="btn btn-link"></div>
-              {{ form_end(formApiSettings) }}
-              <div>
-                <span class="text-info">
-                  Attention certains sites ne prennent pas en compte :
-                </span>
-                <ul class="text-info">
-                  <li>
-                    les mots clés à exclure.
-                  </li>
-                  <li>
-                    L'ancienneté des annonces
-                  </li>
+              <input type="submit" class="btn btn-link" />
+            </div>
+            {{ form_end(formApiSettings) }}
+            <div>
+              <span class="text-info">
+                Attention certains sites ne prennent pas en compte :
+              </span>
+              <ul class="text-info">
+                <li>
+                  les mots clés à exclure.
+                </li>
+                <li>
+                  L'ancienneté des annonces
+                </li>
 
-                </ul>
-              </div>
+              </ul>
             </div>
           </div>
         </div>
-
       </div>
 
-    {% endblock %}
-    
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed  d-flex gap-1" type="button" data-bs-toggle="collapse" data-bs-target="#address-book" aria-expanded="false" aria-controls="address-book">
+            Carnet d'adresse 
+            <div class="badge text-bg-secondary">
+            {{ contacts }} {{ contacts | plural('contact', 'contacts')}}
+            </div>
+          </button>
+        </h2>
+        <div id="address-book" class="accordion-collapse collapse" data-bs-parent="#mySpaceAccordion">
+          <div class="accordion-body">
+        <a href="{{ path('app_address_book_new') }}">Ajouter un contact</a>
+        {% if contacts > 0 %}
+        
+          {% include "home/_dataTable.html.twig" with {'ths': ['Nom','Prénom', 'Email', 'Société',  'Note', 'Téléphone', ''], 'tableId': 'address-book-table'} %}
+        {% endif %}
+        </div>
+        </div>
+        </div>
+
+      </div>
+    </div>
+
+  {% endblock %}
+  

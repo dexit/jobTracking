@@ -46,19 +46,21 @@ body {
 }
 
 main {
-  /* max-height: 80vh;
-  overflow: auto; */
-  margin-bottom: 10rem !important;
+  top:10rem;
+  
+ min-height: calc(100vh - 10rem) !important;
+ padding-bottom: 10rem;
+  overflow: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .ui-autocomplete {
   background-color: #eee;
 }
 
-body{
-  /* height: 100vh;
-  overflow: hidden; */
-}
 
 :root {
 
