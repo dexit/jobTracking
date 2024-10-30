@@ -17,11 +17,7 @@ body {
   background-color: #606468;
 }
 
-main {
-  min-width: 500px;
-  margin: 0 100px;
-  margin-bottom: 100px;
-}
+
 .bg-div {
   background-color: #eee !important;
   border-radius: 0.5rem !important;
@@ -50,8 +46,9 @@ main {
 }
 
 main {
-  max-height: 80vh;
-  overflow: auto;
+  /* max-height: 80vh;
+  overflow: auto; */
+  margin-bottom: 10rem !important;
 }
 
 .ui-autocomplete {
@@ -59,8 +56,8 @@ main {
 }
 
 body{
-  height: 100vh;
-  overflow: hidden;
+  /* height: 100vh;
+  overflow: hidden; */
 }
 
 :root {

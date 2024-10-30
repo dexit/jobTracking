@@ -93,4 +93,18 @@ class HomeController extends AbstractController
 
         ]);
     }
+    #[Route('/mentions_legales', name: 'app_rgpd')]
+    function rgpd(){
+        return $this->render('rgpd.html.twig', [
+
+        ]);
+    }
+
+    #[Route('/about', name: 'app_about')]
+    function about(){
+        return $this->render('about.html.twig', [
+
+        ]);
+    }
+
 }
