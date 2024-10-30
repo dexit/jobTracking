@@ -147,27 +147,39 @@
             </div>
 
             <div class="d-flex justify-content-end">
-              <input type="submit" class="btn btn-link"></div>
-              {{ form_end(formApiSettings) }}
-              <div>
-                <span class="text-info">
-                  Attention certains sites ne prennent pas en compte :
-                </span>
-                <ul class="text-info">
-                  <li>
-                    les mots clés à exclure.
-                  </li>
-                  <li>
-                    L'ancienneté des annonces
-                  </li>
+              <input type="submit" class="btn btn-link" />
+            </div>
+            {{ form_end(formApiSettings) }}
+            <div>
+              <span class="text-info">
+                Attention certains sites ne prennent pas en compte :
+              </span>
+              <ul class="text-info">
+                <li>
+                  les mots clés à exclure.
+                </li>
+                <li>
+                  L'ancienneté des annonces
+                </li>
 
-                </ul>
-              </div>
+              </ul>
             </div>
           </div>
         </div>
-
       </div>
 
-    {% endblock %}
-    
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed  d-flex gap-1" type="button" data-bs-toggle="collapse" data-bs-target="#criterias" aria-expanded="false" aria-controls="addre">
+            Carnet d'adresse
+          </button>
+        </h2>
+        <div id="criterias" class="accordion-collapse collapse" data-bs-parent="#mySpaceAccordion">
+          <div class="accordion-body"></div>
+        </div>
+
+      </div>
+    </div>
+
+  {% endblock %}
+  

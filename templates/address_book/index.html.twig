@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}AddressBook index{% endblock %}
+
+{% block body %}
+    <h1>AddressBook index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>Email</th>
+                <th>Company</th>
+                <th>CreatedAt</th>
+                <th>Note</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for address_book in address_books %}
+            <tr>
+                <td>{{ address_book.id }}</td>
+                <td>{{ address_book.firstName }}</td>
+                <td>{{ address_book.lastName }}</td>
+                <td>{{ address_book.email }}</td>
+                <td>{{ address_book.company }}</td>
+                <td>{{ address_book.createdAt ? address_book.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ address_book.note }}</td>
+                <td>
+                    <a href="{{ path('app_address_book_show', {'id': address_book.id}) }}">show</a>
+                    <a href="{{ path('app_address_book_edit', {'id': address_book.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_address_book_new') }}">Create new</a>
+{% endblock %}

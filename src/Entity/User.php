@@ -76,12 +76,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?JobSearchSettings $jobSearchSettings = null;
 
+    /**
+     * @var Collection<int, AddressBook>
+     */
+    #[ORM\OneToMany(targetEntity: AddressBook::class, mappedBy: 'user')]
+    private Collection $user;
+
     public function __construct()
     {
         $this->jobTrackings = new ArrayCollection();
         $this->jobs = new ArrayCollection();
         $this->notes = new ArrayCollection();
         $this->cVs = new ArrayCollection();
+        $this->user = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -348,6 +355,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->jobSearchSettings = $jobSearchSettings;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AddressBook>
+     */
+    public function getUser(): Collection
+    {
+        return $this->user;
+    }
+
+    public function addUser(AddressBook $user): static
+    {
+        if (!$this->user->contains($user)) {
+            $this->user->add($user);
+            $user->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(AddressBook $user): static
+    {
+        if ($this->user->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getUser() === $this) {
+                $user->setUser(null);
+            }
+        }
 
         return $this;
     }
