@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\AddressBookRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: AddressBookRepository::class)]
 class AddressBook
@@ -12,24 +13,31 @@ class AddressBook
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['address_book'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['address_book'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['address_book'])]
     private ?string $lastName = null;
 
+    #[Groups(['address_book'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['address_book'])]
     private ?string $company = null;
 
     #[ORM\Column]
+    #[Groups(['address_book'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['address_book'])]
     private ?string $note = null;
 
     #[ORM\ManyToOne(inversedBy: 'user')]

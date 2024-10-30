@@ -11,20 +11,22 @@ export function generateDataTable(tableData, columnsKeys = [
     "title",
     "name",
     "delai",
-    "link"], createLink = true, selector = '#table') {
-
+    "link"], createLink = true, selector = '#table', path = '/candidature/id') {
     if (createLink) {
-        tableData = tableData.map((jobTracking) => {
+        tableData = tableData.map((item) => {
 
             const newLink = document.createElement('a');
-
-            newLink.href = '/candidature/' + jobTracking.id;
+            newLink.href = path + item.id;
+            if (path.includes('/id')){
+                newLink.href = path.replace('/id', '/' +item.id)
+            }
+         
             newLink.textContent = 'Visualiser';
 
 
             return {
-                ...jobTracking,
-                delai: getDelai(jobTracking),
+                ...item,
+                delai: getDelai(item),
                 link: newLink.outerHTML
             }
         })
@@ -53,16 +55,18 @@ export function generateDataTable(tableData, columnsKeys = [
         pageLength: 20,
         responsive: true,
         createdRow: function (row, data, dataIndex) {
-            
+
             $(row).find('td').addClass('align-content-center');
-            if (!!data.set_closed) {
+
+            if ('set_closed' in data && !!data.set_closed) {
                 $(row).find('td').addClass('color-grey');
             }
         },
+        
         columnDefs: [
             {
                 targets: [3], // Indiquez les colonnes à tronquer
-                render: function(data, type, row) {
+                render: function (data, type, row) {
                     if (type === 'display' && data.length > 500) { // Ajustez cette valeur selon vos besoins
                         return data.substring(0, 500) + '...';
                     }

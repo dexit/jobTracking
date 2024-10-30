@@ -11,18 +11,23 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/address/book')]
 final class AddressBookController extends AbstractController
 {
     #[Route(name: 'app_address_book_index', methods: ['GET'])]
-    public function index(AddressBookRepository $addressBookRepository, Security $security): Response
+    public function index(AddressBookRepository $addressBookRepository, Security $security, SerializerInterface $serializer): Response
     {
+
+        $addressBooks = $addressBookRepository->findBy(['user' => $security->getUser()]);
+        $addressBooksJson = $serializer->serialize($addressBooks, 'json', ['groups' => ['address_book']] );
 
 
         return $this->render('address_book/index.html.twig', [
-            'address_books' => $addressBookRepository->findBy(['user' => $security->getUser()]),
+            'address_books' => $addressBooks,
+            'address_books_json' => $addressBooksJson,
         ]);
     }
 
