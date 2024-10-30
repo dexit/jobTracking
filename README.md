@@ -52,6 +52,8 @@ Copy .env.example to .env and adjust your database and API configurations:
 - **MySQL**: Database management system
 - **Adzuna API**: For fetching job offers
 - **France Travail API**: For job search integration
+- **Jooble API**: For job search integration
+- **Mistral AI API**: For cover letter generation
 
 ## Future Improvements
 - Implement user roles.
