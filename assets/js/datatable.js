@@ -1,36 +1,62 @@
 import { DataTable, language, moment } from '../app';
 /**
  * 
- * @param {*} tableData : Tableau des données 
- * @param {*} columnsKeys : clés des données
- * @param {*} createLink : génération d'un lien vers candidature
- * @param {*} selector : /!\ il s'agit d'un id bien le faire commencer par #
+ * @param {array} tableData : Tableau des données 
+ * @param {array} columnsKeys : clés des données
+ * @param {boolean} createLink : génération d'un lien vers candidature
+ * @param {string} selector : /!\ il s'agit d'un id bien le faire commencer par #
+ * @param {string} path : lien vers la page.  Indiquez #id 
+ * 
  */
-export function generateDataTable(tableData, columnsKeys = [
-    "recruiter",
-    "title",
-    "name",
-    "delai",
-    "link"], createLink = true, selector = '#table', path = '/candidature/id') {
-    if (createLink) {
-        tableData = tableData.map((item) => {
+export function generateDataTable(
+    tableData,
+    columnsKeys,
+    selector,
+    createLink,
+    path) {
 
+    tableData = tableData.map(item => {
+        let newItem = {};
+        for (const key in item) {
+            newItem[key] = item[key] === null ? '-' : item[key];
+        }
+        if (createLink) {
             const newLink = document.createElement('a');
             newLink.href = path + item.id;
-            if (path.includes('/id')){
-                newLink.href = path.replace('/id', '/' +item.id)
+            if (path.includes('#id')) {
+                newLink.href = path.replace('#id', item.id)
             }
-         
+
             newLink.textContent = 'Visualiser';
-
-
-            return {
-                ...item,
+            newItem = {
+                ...newItem,
                 delai: getDelai(item),
                 link: newLink.outerHTML
             }
-        })
-    }
+        }
+
+        return newItem;
+    });
+
+    // if (createLink) {
+    //     tableData = tableData.map((item) => {
+
+    //         const newLink = document.createElement('a');
+    //         newLink.href = path + item.id;
+    //         if (path.includes('/id')){
+    //             newLink.href = path.replace('/id', '/' +item.id)
+    //         }
+
+    //         newLink.textContent = 'Visualiser';
+
+
+    //         return {
+    //             ...item,
+    //             delai: getDelai(item),
+    //             link: newLink.outerHTML
+    //         }
+    //     })
+    // }
 
     const columns = []
 
@@ -62,7 +88,7 @@ export function generateDataTable(tableData, columnsKeys = [
                 $(row).find('td').addClass('color-grey');
             }
         },
-        
+
         columnDefs: [
             {
                 targets: [3], // Indiquez les colonnes à tronquer

@@ -17,19 +17,6 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/address/book')]
 final class AddressBookController extends AbstractController
 {
-    #[Route(name: 'app_address_book_index', methods: ['GET'])]
-    public function index(AddressBookRepository $addressBookRepository, Security $security, SerializerInterface $serializer): Response
-    {
-
-        $addressBooks = $addressBookRepository->findBy(['user' => $security->getUser()]);
-        $addressBooksJson = $serializer->serialize($addressBooks, 'json', ['groups' => ['address_book']] );
-
-
-        return $this->render('address_book/index.html.twig', [
-            'address_books' => $addressBooks,
-            'address_books_json' => $addressBooksJson,
-        ]);
-    }
 
     #[Route('/nouveau_contact', name: 'app_address_book_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, Security $security): Response
@@ -44,7 +31,7 @@ final class AddressBookController extends AbstractController
             $entityManager->persist($addressBook);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_address_book_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_user_show', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('address_book/new.html.twig', [
@@ -53,24 +40,25 @@ final class AddressBookController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_address_book_show', methods: ['GET'])]
-    public function show(AddressBook $addressBook): Response
-    {
-        return $this->render('address_book/show.html.twig', [
-            'address_book' => $addressBook,
-        ]);
-    }
+
 
     #[Route('/{id}/edit', name: 'app_address_book_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, AddressBook $addressBook, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, AddressBook $addressBook, EntityManagerInterface $entityManager, Security $security): Response
     {
+
+        $user = $security->getUser();
+        if ($addressBook->getUser() !== $user) {
+            throw $this->createAccessDeniedException('Vous n\'êtes pas autorisé à modifier ce contact.');
+        }
+
         $form = $this->createForm(AddressBookType::class, $addressBook);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_address_book_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_user_show', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('address_book/edit.html.twig', [
@@ -80,13 +68,18 @@ final class AddressBookController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_address_book_delete', methods: ['POST'])]
-    public function delete(Request $request, AddressBook $addressBook, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, AddressBook $addressBook, EntityManagerInterface $entityManager, Security $security): Response
     {
+        $user = $security->getUser();
+        if ($addressBook->getUser() !== $user) {
+            throw $this->createAccessDeniedException('Vous n\'êtes pas autorisé à modifier ce contact.');
+        }
+        
         if ($this->isCsrfTokenValid('delete' . $addressBook->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($addressBook);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_address_book_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_user_show', [], Response::HTTP_SEE_OTHER);
     }
 }

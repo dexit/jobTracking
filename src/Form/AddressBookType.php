@@ -7,6 +7,7 @@ use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -31,24 +32,32 @@ class AddressBookType extends AbstractType
                 ]
             ])
             ->add('email', EmailType::class, [
+                'required'=>false,
                 'attr' => [
                     'placeholder' => 'Email',
                     'class' => "form-control mb-3 w-lg-auto",
                 ]
             ])
             ->add('company',TextType::class, [
+                
                 'attr' => [
                     'placeholder' => 'Société',
                     'class' => "form-control mb-3 w-lg-auto",
                 ]
             ])
-            // ->add('createdAt', null, [
-            //     'widget' => 'single_text',
-            // ])
-            ->add('note', TextareaType::class, [
+            ->add('phone', TelType::class, [
+                'required'=>false,
                 'attr' => [
-                    'placeholder' => 'Informations compémentaires',
+                    'placeholder' => 'Téléphone',
+                    'class' => "form-control mb-3 w-lg-auto",
+                ]
+            ])
+            ->add('note', TextareaType::class, [
+                'required'=>false,
+                'attr' => [
+                    'placeholder' => 'Informations complémentaires',
                     'class' => "form-control mb-3 ",
+
                 ]
             ])
             // ->add('user', EntityType::class, [

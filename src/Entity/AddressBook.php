@@ -43,6 +43,10 @@ class AddressBook
     #[ORM\ManyToOne(inversedBy: 'user')]
     private ?User $user = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['address_book'])]
+    private ?string $phone = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -128,6 +132,18 @@ class AddressBook
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): static
+    {
+        $this->phone = $phone;
 
         return $this;
     }

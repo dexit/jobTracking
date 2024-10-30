@@ -12,7 +12,7 @@
 
 {% block body %}
 
-  <div class="js-table-data" data-table-items="{{ jobs | json_encode }}"></div>
+  <div class="js-table-data" data-table-items="{{ jobs | json_encode }}" data-address-book="{{ address_books_json  }}"></div>
   <div class="my-3 bg-div">
 
     <div class="accordion" id="mySpaceAccordion">
@@ -170,12 +170,22 @@
 
       <div class="accordion-item">
         <h2 class="accordion-header">
-          <button class="accordion-button collapsed  d-flex gap-1" type="button" data-bs-toggle="collapse" data-bs-target="#criterias" aria-expanded="false" aria-controls="addre">
-            Carnet d'adresse
+          <button class="accordion-button collapsed  d-flex gap-1" type="button" data-bs-toggle="collapse" data-bs-target="#address-book" aria-expanded="false" aria-controls="address-book">
+            Carnet d'adresse 
+            <div class="badge text-bg-secondary">
+            {{ contacts }} {{ contacts | plural('contact', 'contacts')}}
+            </div>
           </button>
         </h2>
-        <div id="criterias" class="accordion-collapse collapse" data-bs-parent="#mySpaceAccordion">
-          <div class="accordion-body"></div>
+        <div id="address-book" class="accordion-collapse collapse" data-bs-parent="#mySpaceAccordion">
+          <div class="accordion-body">
+        <a href="{{ path('app_address_book_new') }}">Ajouter un contact</a>
+        {% if contacts > 0 %}
+        
+          {% include "home/_dataTable.html.twig" with {'ths': ['Nom','Prénom', 'Email', 'Société',  'Note', 'Téléphone', ''], 'tableId': 'address-book-table'} %}
+        {% endif %}
+        </div>
+        </div>
         </div>
 
       </div>
