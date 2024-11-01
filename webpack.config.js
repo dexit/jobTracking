@@ -33,6 +33,7 @@ Encore
     .addEntry('jobAlert', './assets/js/jobAlert.js')
     .addEntry('mistralAi', './assets/js/mistralAi.js')
     .addEntry('cookies', './assets/js/cookies.js')
+    .addEntry('admin', './assets/js/admin.js')
 
     .addStyleEntry('login', './assets/styles/login.css')
     .addStyleEntry('postit', './assets/styles/postit.css')

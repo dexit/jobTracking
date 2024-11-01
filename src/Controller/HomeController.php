@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\City;
 use App\Entity\CV;
+use App\Entity\JobApiServices;
 use App\Entity\JobSearchSettings;
 use App\Entity\User;
 use App\Form\JobSearchSettingsType;
@@ -46,7 +47,7 @@ class HomeController extends AbstractController
 
 
     #[Route('/mon_espace', name: 'app_user_show')]
-    public function show(JobRepository $jobRepository, SerializerInterface $serializer, Security $security, EntityManagerInterface $entityManager, Request $request, AddressBookRepository $addressBookRepository, ): Response
+    public function show(JobRepository $jobRepository, SerializerInterface $serializer, Security $security, EntityManagerInterface $entityManager, Request $request, AddressBookRepository $addressBookRepository,): Response
     {
         $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $security->getUser()->getUserIdentifier()]);
 
@@ -76,18 +77,36 @@ class HomeController extends AbstractController
 
 
         $formApiSettings->handleRequest($request);
+
         if ($formApiSettings->isSubmitted()) {
             $cityId =   $formApiSettings->get('city')->getData();
             $city = $entityManager->getRepository(City::class)->findOneBy(['id' => $cityId]);
+
+            $jobApis = [...$formApiSettings->get('jobApiServices')->getData()];
+            
+            $allApiServices = $entityManager->getRepository(JobApiServices::class)->findAll();
+
+            foreach( $allApiServices as  $jobApi){
+                $apiSettings->removeJobApiService($jobApi);
+            }
+
+            foreach ($jobApis as $jobApi) {
+                $apiSettings->addJobApiService($jobApi);
+            }
+
             $apiSettings
                 ->setCity($city)
-                ->setCountry('fr');
+                ->setCountry('fr')
+            ;
+
+
             $entityManager->flush();
-            return $this->redirectToRoute('app_job_alert');
+            $this->addFlash('success', 'Les paramètres de recherche d\'emploi ont été mis à jour avec succès.');
+            // return $this->redirectToRoute('app_job_alert');
         }
 
         $addressBooks = $addressBookRepository->findBy(['user' => $security->getUser()]);
-        $addressBooksJson = $serializer->serialize($addressBooks, 'json', ['groups' => ['address_book']] );
+        $addressBooksJson = $serializer->serialize($addressBooks, 'json', ['groups' => ['address_book']]);
 
         return $this->render('home/my-space.html.twig', [
             'jobs' => $userJobs,
@@ -95,23 +114,20 @@ class HomeController extends AbstractController
             'formCV' => $formCV,
             'formApiSettings' => $formApiSettings,
             'address_books_json' => $addressBooksJson,
-            'contacts'=>count(  $addressBooks )
+            'contacts' => count($addressBooks)
 
 
         ]);
     }
     #[Route('/mentions_legales', name: 'app_rgpd')]
-    function rgpd(){
-        return $this->render('rgpd.html.twig', [
-
-        ]);
+    function rgpd()
+    {
+        return $this->render('rgpd.html.twig', []);
     }
 
     #[Route('/about', name: 'app_about')]
-    function about(){
-        return $this->render('about.html.twig', [
-
-        ]);
+    function about()
+    {
+        return $this->render('about.html.twig', []);
     }
-
 }

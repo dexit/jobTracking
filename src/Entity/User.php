@@ -82,6 +82,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: AddressBook::class, mappedBy: 'user')]
     private Collection $user;
 
+
     public function __construct()
     {
         $this->jobTrackings = new ArrayCollection();
@@ -388,5 +389,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
 
 }

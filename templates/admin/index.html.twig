@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+{% set tinymceUrl = 'https://cdn.tiny.cloud/1/' ~ app.request.server.get('TINY_MCE_KEY') ~ '/tinymce/7/tinymce.min.js' %}
+
+<script src="{{ tinymceUrl}}" referrerpolicy="origin"></script>
+
+    {{ encore_entry_script_tags('admin') }}
+
+{% endblock %}
+
+{% block body %}
+{{ app.request.server.get('TINY_MCE_KEY')}}
+    <div class="bg-div js-table-data" data-table-job-api="{{ allJobApiServicesJson }}">
+
+        {% include "admin/api_services.html.twig" %}
+    </div>
+{% endblock %}

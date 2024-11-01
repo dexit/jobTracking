@@ -16,6 +16,7 @@ class ApiJob
     private  string $link;
     private  string $created;
     private  string $id;
+    private  string $logo;
 
 
 
@@ -82,7 +83,8 @@ class ApiJob
             'location' =>  $this->location,
             'link' =>  $this->link,
             'type_contrat' => $this->typeContrat,
-            'created' => $created->format('d/m/y')
+            'created' => $created->format('d/m/y'),
+            'logo' => $this->logo
         ];
     }
 
@@ -156,5 +158,17 @@ class ApiJob
             return $this->getNoInfoStr();
         }
         return $field;
+    }
+
+    /**
+     * Set the value of logo
+     *
+     * @return  self
+     */ 
+    public function setLogo($logo)
+    {
+        $this->logo = $logo;
+
+        return $this;
     }
 }
