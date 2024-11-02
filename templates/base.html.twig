@@ -17,58 +17,68 @@
 	<body>
 
 		{% block header %}
-		{% if app.user %}
+			{% if app.user %}
 
-			<nav	class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
-				<a	class="navbar-brand"	href="{{ url( 'app_synthese') }}">
-					<img	src="/assets/img/logo.jpg"	class="brand-logo"	alt="brand logo">
-					Bienvenue
-					{{ app.user.firstname }}
+				<nav	class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+					<a	class="navbar-brand"	href="{{ url( 'app_synthese') }}">
+						<img	src="/assets/img/logo.jpg"	class="brand-logo"	alt="brand logo">
+						Bienvenue
+						{{ app.user.firstname }}
 
-				</a>
-				<a	href="{{ path('candidature_new') }}">
+					</a>
+					<a	href="{{ path('candidature_new') }}">
 
-					<strong	class="text-center ">
-						Ajouter une candidature
-					</strong>
-				</a>
-				<button	class="navbar-toggler"	type="button"	data-bs-toggle="collapse"	data-bs-target="#navbarNav"	aria-controls="navbarNav"	aria-expanded="false"	aria-label="Toggle navigation">
-					<span	class="navbar-toggler-icon"></span>
-				</button>
-				<div	class="collapse navbar-collapse justify-content-end"	id="navbarNav">
-					<ul	class="navbar-nav">
-						<li	class="nav-item">
-							<a	class="nav-link {% if app.request.get('_route') == 'app_synthese' %}active{% endif %}"	aria-current="page"	href="{{ url( 'app_synthese') }}">
-								Accueil
-							</a>
-						</li>
-						<li	class="nav-item">
-							<a	class="nav-link {% if app.request.get('_route') == 'app_job_alert' %}active{% endif %}"	aria-current="page"	href="{{ url( 'app_job_alert') }}">
-								Offres d'emploi
-							</a>
-						</li>
+						<strong	class="text-center ">
+							Ajouter une candidature
+						</strong>
+					</a>
+					<button	class="navbar-toggler"	type="button"	data-bs-toggle="collapse"	data-bs-target="#navbarNav"	aria-controls="navbarNav"	aria-expanded="false"	aria-label="Toggle navigation">
+						<span	class="navbar-toggler-icon"></span>
+					</button>
+					<div	class="collapse navbar-collapse justify-content-end"	id="navbarNav">
+						<ul	class="navbar-nav">
+							<li	class="nav-item">
+								<a	class="nav-link {% if app.request.get('_route') == 'app_synthese' %}active{% endif %}"	aria-current="page"	href="{{ url( 'app_synthese') }}">
+									Accueil
+								</a>
+							</li>
+							<li	class="nav-item">
+								<a	class="nav-link {% if app.request.get('_route') == 'app_job_alert' %}active{% endif %}"	aria-current="page"	href="{{ url( 'app_job_alert') }}">
+									Offres d'emploi
+								</a>
+							</li>
 
-						<li	class="nav-item">
-							<a	class="nav-link {% if app.request.get('_route') == 'app_job_index' %}active{% endif %}"	aria-current="page"	href="{{ url( 'app_job_index') }}">
-								Tableau de bord
-							</a>
-						</li>
-		
-						<li	class="nav-item">
+							<li	class="nav-item">
+								<a	class="nav-link {% if app.request.get('_route') == 'app_job_index' %}active{% endif %}"	aria-current="page"	href="{{ url( 'app_job_index') }}">
+									Tableau de bord
+								</a>
+							</li>
 
-							<a	class="nav-link {% if app.request.get('_route') ==	'app_user_show' %}active{% endif %}"	aria-current="page"	href="{{ url( 	'app_user_show') }}">
-								Mon espace
-							</a>
-						</li>
-						<li	class="nav-item">
-							<a	class="nav-link"	href="{{ url( 'app_logout') }}">
-								Se deconnecter
-							</a>
-						</li>
-					</ul>
-				</div>
+							<li	class="nav-item">
 
-			</nav>
+								<a	class="nav-link {% if app.request.get('_route') ==	'app_user_show' %}active{% endif %}"	aria-current="page"	href="{{ url( 	'app_user_show') }}">
+									Mon espace
+								</a>
+							</li>
+							{% if 'ROLE_ADMIN' in app.user.roles %}
+
+								<li	class="nav-item">
+
+									<a	class="nav-link {% if app.request.get('_route') ==	'app_admin_index' %}active{% endif %}"	aria-current="page"	href="{{ url( 	'app_admin_index') }}">
+										Admin
+									</a>
+								</li>
+							{% endif %}
+
+							<li	class="nav-item">
+								<a	class="nav-link"	href="{{ url( 'app_logout') }}">
+									Se deconnecter
+								</a>
+							</li>
+						</ul>
+					</div>
+
+				</nav>
 			{% endif %}
 		{% endblock %}
 		{% for type, messages in app.session.flashBag.all %}
@@ -127,16 +137,14 @@
 							</a>
 
 						</div>
-						{% if app.user %}
 
-							<div>
-								<a	href="https://www.linkedin.com/in/xavier-vitali"	target="_blank">
-									<i	class="fa-brands fa-linkedin-in"></i>
-									Linkedin
-								</a>
+						<div>
+							<a	href="https://www.linkedin.com/in/xavier-vitali"	target="_blank">
+								<i	class="fa-brands fa-linkedin-in"></i>
+								Linkedin
+							</a>
 
-							</div>
-						{% endif %}
+						</div>
 					</div>
 				</nav>
 

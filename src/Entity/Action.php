@@ -14,6 +14,7 @@ class Action
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["job"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -30,6 +31,9 @@ class Action
     #[ORM\OneToMany(targetEntity: JobTracking::class, mappedBy: 'action')]
     private Collection $jobTrackings;
 
+
+    #[Groups(["job"])]
+    private ?int $jobTrackings_count = null;
     public function __construct()
     {
         $this->jobTrackings = new ArrayCollection();
@@ -94,4 +98,17 @@ class Action
 
         return $this;
     }
+
+    public function getJobTrackingsCount(): ?int
+    {
+        return $this->jobTrackings_count;
+    }
+
+    public function setJobTrackingsCount(?int $jobTrackings_count): static
+    {
+        $this->jobTrackings_count = $jobTrackings_count;
+
+        return $this;
+    }
+
 }

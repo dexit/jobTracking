@@ -18,7 +18,7 @@ export function generateDataTable(
     tableData = tableData.map(item => {
         let newItem = {};
         for (const key in item) {
-            newItem[key] = item[key] === null ? '-' : item[key];
+            newItem[key] = item[key] === null ? '' : nl2br(item[key]);
         }
         if (createLink) {
             const newLink = document.createElement('a');
@@ -38,39 +38,17 @@ export function generateDataTable(
         return newItem;
     });
 
-    // if (createLink) {
-    //     tableData = tableData.map((item) => {
-
-    //         const newLink = document.createElement('a');
-    //         newLink.href = path + item.id;
-    //         if (path.includes('/id')){
-    //             newLink.href = path.replace('/id', '/' +item.id)
-    //         }
-
-    //         newLink.textContent = 'Visualiser';
-
-
-    //         return {
-    //             ...item,
-    //             delai: getDelai(item),
-    //             link: newLink.outerHTML
-    //         }
-    //     })
-    // }
 
     const columns = []
 
     columnsKeys.forEach((key) => columns.push({ data: key }))
 
-    // DataTable.datetime('DD/MM/YYYY');
 
     new DataTable(selector, {
         data: tableData,
         columns,
         language,
         layout: {
-            // topStart: true,
-            // topEnd: null,
             bottomEnd: {
 
                 paging: {
@@ -91,7 +69,7 @@ export function generateDataTable(
 
         columnDefs: [
             {
-                targets: [3], // Indiquez les colonnes à tronquer
+                // targets: [3], // Indiquez les colonnes à tronquer
                 render: function (data, type, row) {
                     if (type === 'display' && data.length > 500) { // Ajustez cette valeur selon vos besoins
                         return data.substring(0, 500) + '...';
@@ -128,4 +106,8 @@ function getDelai(jobTracking) {
     return diffStr
 
 
+}
+
+function nl2br(str) {
+    return str.toString().replace(/\n/g, '<br>');
 }

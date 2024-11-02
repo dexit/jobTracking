@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+<div class="bg-div">
+    {{ include('admin/job_source/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+
+    {{ include('admin/job_source/delete.html.twig') }}
+</div>
+
+{% endblock %}

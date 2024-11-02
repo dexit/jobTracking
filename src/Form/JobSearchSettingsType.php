@@ -2,7 +2,10 @@
 
 namespace App\Form;
 
+use App\Entity\JobApiServices;
 use App\Entity\JobSearchSettings;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -69,8 +72,21 @@ class JobSearchSettingsType extends AbstractType
                 'html5' => true,
                 'empty_data' => 8
             ])
-
-
+            ->add('jobApiServices', EntityType::class, [
+                'class' => JobApiServices::class,
+                'choice_label' => function (JobApiServices $service) {
+                    $url = $service->getUrl();
+                    return  "<a href='$url' target='_blank'>".$service->getName() . '</a> -  <small class="form-text text-muted">' . $service->getDescription() .'</small>';
+                },
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('a')
+                        ->orderBy('a.name', 'ASC');
+                },
+                'label' => 'Services de recherche d\'emploi',
+                'attr' => ['class' => "form-control"], // Utilisé pour les "select", mais pas nécessaire ici avec les radio
+                'expanded' => true, // Options sous forme de boutons radio
+                'multiple' => true, // Un seul bouton peut être sélectionné
+            ])
         ;
     }
 

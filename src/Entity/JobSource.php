@@ -6,6 +6,7 @@ use App\Repository\JobSourceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: JobSourceRepository::class)]
 class JobSource
@@ -13,9 +14,11 @@ class JobSource
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["job_source"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["job_source"])]
     private ?string $name = null;
 
     /**
@@ -24,6 +27,9 @@ class JobSource
     #[ORM\OneToMany(targetEntity: Job::class, mappedBy: 'source')]
     private Collection $jobs;
 
+    
+    #[Groups(["job_source"])]
+    private ?int $job_count = null;
 
     public function __construct()
     {
@@ -73,6 +79,17 @@ class JobSource
                 $job->setSource(null);
             }
         }
+
+        return $this;
+    }
+    public function getJobCount(): ?int
+    {
+        return $this->job_count;
+    }
+
+    public function setJobCount(?int $job_count): static
+    {
+        $this->job_count = $job_count;
 
         return $this;
     }
