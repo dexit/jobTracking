@@ -27,11 +27,11 @@ final class ApiController extends AbstractController
         $user = $userRepository->findOneBy(['email' => $user->getUserIdentifier()]);
         $userjobApiSettings = $user->getJobSearchSettings();
 
-        $apiService = new ApiService($userjobApiSettings, $mistralAiService, $cache);
         if (empty($userjobApiSettings) || empty(count($userjobApiSettings->getJobApiServices()))) {
             $this->addFlash("info", "Vous n'avez pas encore créé de profil de recherche.");
             return $this->redirectToRoute('app_user_show');
         }
+        $apiService = new ApiService($userjobApiSettings, $mistralAiService, $cache);
 
 
         $userApiJobResults = $apiService->getUserApiJobResults();

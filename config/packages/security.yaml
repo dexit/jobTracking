@@ -43,10 +43,10 @@ security:
         - { path: ^/about, roles:  PUBLIC_ACCESS }
         - { path: ^/mentions_legales, roles:  PUBLIC_ACCESS }
 
+        - { path: ^/admin, roles: ROLE_ADMIN }
         
         - { path: ^/, roles:  ROLE_USER}
 
-        - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:
