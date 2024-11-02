@@ -222,7 +222,7 @@ class ApiService
         $cacheKey = 'user_api_' . $this->userApiSettings->getUser()->getId();
 
         $cachedData = $this->cache->get($cacheKey, function (ItemInterface $item) use ($secondsUntilMidnight, $response,  $serializedUserjobApiSettings) {
-            $item->expiresAfter($secondsUntilMidnight); 
+            $item->expiresAfter($secondsUntilMidnight);
             foreach ($this->userApiSettings->getJobApiServices() as $userJobApiService) {
                 $functionName = $userJobApiService->getFunctionName();
                 $apiName = $userJobApiService->getName();
@@ -234,7 +234,7 @@ class ApiService
                     $response[] = [$apiName => 'Méthode inexistante: ' . $functionName];
                 }
             }
- 
+
             // Retourner les paramètres et la réponse de l'API
             return [
                 'params' =>    $serializedUserjobApiSettings,
@@ -246,14 +246,13 @@ class ApiService
         if (isset($cachedData['params']) && $cachedData['params'] !== $serializedUserjobApiSettings) {
 
             foreach ($this->userApiSettings->getJobApiServices() as $userJobApiService) {
-                
+
                 $functionName = $userJobApiService->getFunctionName();
                 $apiName = $userJobApiService->getName();
 
                 if (method_exists($this, $functionName)) {
-            
-                    $response = array_merge($response, $this->{$functionName}());
 
+                    $response = array_merge($response, $this->{$functionName}());
                 } else {
                     // Gérer l'erreur si la méthode n'existe pas
                     $response[] = [$apiName => 'Méthode inexistante: ' . $functionName];
@@ -264,10 +263,23 @@ class ApiService
                     'response' => $response,
                 ];
             }
-
         }
-        return $cachedData['response'];
 
+        usort($cachedData['response'], function ($jobA, $jobB) {
+            if ($jobA['created'] == $jobB['created']) {
+                return 0;
+            }
+
+            return ($jobA['created'] < $jobB['created']) ? 1 : -1;
+        });
+
+        $apiResponse = array_map(
+            function ($job) {
+                $job['created']=  $job['created']->format('d/m/y');
+                return $job;
+            }
+        , $cachedData['response']);
+        return    $apiResponse;
     }
     private function findClosestValue($value, $array)
     {

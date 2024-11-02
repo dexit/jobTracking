@@ -18,27 +18,23 @@ class JobApiServicesType extends AbstractType
         $builder
             ->add('name', TextType::class, ['label'=>false, 
             'attr'=>[
-                'class'=>'form-control',
+                'class'=>'form-control my-1',
                 'placeholder' => 'Nom du service Api'
             ]])
             ->add('functionName', TextType::class, ['label'=>false, 
             'attr'=>[
-                'class'=>'form-control',
+                'class'=>'form-control my-1',
                 'placeholder' => 'Nom de la fonction dans ApiService'
             ]])
             ->add('url', TextType::class, ['label'=>false, 
             'attr'=>[
-                'class'=>'form-control',
+                'class'=>'form-control my-1',
                 'placeholder' => 'url du site principal'
             ]])
-            ->add('logo', TextType::class, ['label'=>false, 
-            'attr'=>[
-                'class'=>'form-control',
-                'placeholder' => 'logo'
-            ]])
+     
             ->add('description', TextareaType::class, ['label'=>false, 
             'attr'=>[
-                'class'=>'form-control',
+                'class'=>'form-control my-1',
                 'placeholder' => 'Description'
             ]])
 

@@ -9,10 +9,10 @@
 
 {% endblock %}
 {% block body %}
-  <  <div class="js-table-data" data-table-adzuna="{{ adzunaJobResults | json_encode }}" data-table-france-telecom="{{ franceTravailJobResults| json_encode }}" data-table-jooble="{{ joobleResults| json_encode }}"></div>
+ <div class="js-table-data" data-table-adzuna="{{ adzunaJobResults | json_encode }}" data-table-france-telecom="{{ franceTravailJobResults| json_encode }}" data-table-jooble="{{ joobleResults| json_encode }}"></div>
     <div class="bg-div">
         {% set apiSettings = app.user.jobSearchSettings %}
-        <p>
+        <p>w
             Annonces pour des
             {{ apiSettings.maxDaysOld }}
             derniers jours pour

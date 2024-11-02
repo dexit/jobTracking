@@ -83,7 +83,7 @@ class ApiJob
             'location' =>  $this->location,
             'link' =>  $this->link,
             'type_contrat' => $this->typeContrat,
-            'created' => $created->format('d/m/y'),
+            'created' => $created,
             'logo' => $this->logo
         ];
     }

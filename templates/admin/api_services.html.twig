@@ -1,8 +1,9 @@
+
+<div class="border rounded p-3 bg-white">
 <h2>
     Apis de recherche d’emploi
 </h2>
-{% include "home/_dataTable.html.twig" with {'ths': ['Nom','Description','Nom de la fonction', ''], 'tableId': 'job-api-table'} %}
-<div class="border rounded p-3">
-<h3>Ajouter une api</h3>
+{% include "home/_dataTable.html.twig" with {'ths': ['Nom','Description','Nom de la fonction','url', ''], 'tableId': 'job-api-table'} %}
+<hr>
 {% include "admin/_form_api_services.html.twig" %}
 </div>

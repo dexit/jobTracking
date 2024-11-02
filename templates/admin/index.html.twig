@@ -10,7 +10,6 @@
 {% endblock %}
 
 {% block body %}
-{{ app.request.server.get('TINY_MCE_KEY')}}
     <div class="bg-div js-table-data" data-table-job-api="{{ allJobApiServicesJson }}">
 
         {% include "admin/api_services.html.twig" %}

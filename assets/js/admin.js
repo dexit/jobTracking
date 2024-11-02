@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
             "name",
             "description",
             "functionName",
+            "url",
             "link"
         ],
         '#job-api-table',

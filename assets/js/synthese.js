@@ -13,15 +13,16 @@ document.addEventListener("DOMContentLoaded", function () {
     series.push(tableData.filter(job => job.action_name === actionName).length)
 
   });
-
+  const width = document.querySelector("main").clientWidth
+  const widthByChart = (width / 2.5 > 500 ? width / 2.5 : width*0.9).toString();
 
 
   const jobsCountPerDelay = JSON.parse(tableDataSelector.getAttribute("data-job-count-per-delay"));
   const categories = jobsCountPerDelay.map(e => e.delay_in_days + ' jours')
   const data =  jobsCountPerDelay.map(e => e.delay_count)
-  generateColumnChart([{name:"Candidatures",data}], categories, 'Candidatures en cours', "#jobs-count-per-delay")
+  generateColumnChart([{name:"Candidatures",data}], categories, 'Candidatures en cours', "#jobs-count-per-delay", widthByChart)
 
-  generatePieChart(labels, series)
+  generatePieChart(labels, series,"Synthèse graphique","#chart",widthByChart)
 
   document.getElementById('search-input').addEventListener('keyup', e => performSearch(e.target.value, tableData))
 
