@@ -75,7 +75,8 @@ class JobSearchSettingsType extends AbstractType
             ->add('jobApiServices', EntityType::class, [
                 'class' => JobApiServices::class,
                 'choice_label' => function (JobApiServices $service) {
-                    return $service->getName() . ' -  <small class="form-text text-muted">' . $service->getDescription() .'</small>';
+                    $url = $service->getUrl();
+                    return  "<a href='$url' target='_blank'>".$service->getName() . '</a> -  <small class="form-text text-muted">' . $service->getDescription() .'</small>';
                 },
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('a')

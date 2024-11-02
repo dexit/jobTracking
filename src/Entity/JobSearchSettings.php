@@ -54,6 +54,7 @@ class JobSearchSettings
      * @var Collection<int, JobApiServices>
      */
     #[ORM\ManyToMany(targetEntity: JobApiServices::class, mappedBy: 'jobSearchSettings')]
+    #[Groups(['apiSettingsGroup'])]
     private Collection $jobApiServices;
 
     public function __construct()

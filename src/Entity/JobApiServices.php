@@ -15,7 +15,7 @@ class JobApiServices
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['api_service'])]
+    #[Groups(['api_service', 'apiSettingsGroup'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]

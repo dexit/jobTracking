@@ -2,9 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Action;
 use App\Entity\JobApiServices;
+use App\Entity\JobSource;
+use App\Form\AdminActionType;
 use App\Form\JobApiServicesType;
+use App\Form\JobSourceType;
+use App\Repository\ActionRepository;
 use App\Repository\JobApiServicesRepository;
+use App\Repository\JobSourceRepository;
 use App\Service\JobService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,7 +25,7 @@ class AdminController extends AbstractController
 {
 
     #[Route('/index', name: 'index')]
-    public function index(Request $request, EntityManagerInterface $entityManager, Security $security, SerializerInterface $serializer,JobApiServicesRepository $jobApiServicesRepository): Response
+    public function index(Request $request, EntityManagerInterface $entityManager, JobSourceRepository $jobSourceRepository,  SerializerInterface $serializer,JobApiServicesRepository $jobApiServicesRepository, ActionRepository $actionRepository): Response
     {
         $jobApi = new JobApiServices();
         $form = $this->createForm(JobApiServicesType::class, $jobApi);
@@ -28,6 +34,19 @@ class AdminController extends AbstractController
         $allJobApiServices = $jobApiServicesRepository->findAll();
         $allJobApiServicesJson = $serializer->serialize($allJobApiServices, 'json', ['groups' => ['api_service']] );
 
+        $jobSources = $jobSourceRepository->findAll();
+        foreach ($jobSources as $jobSource) {
+            $jobSource->setJobCount($jobSource->getJobs()->count());
+        }
+        $allJobSourcesJson =  $serializer->serialize($jobSources, 'json', ['groups' => ['job_source']] );
+
+        $actions = $actionRepository->findAll();
+
+        foreach($actions as $action){
+            $action->setJobTrackingsCount($action->getJobTrackings()->count());
+        };
+
+        $allActionsJson =  $serializer->serialize($actions, 'json', ['groups' => ['job']] );
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($jobApi);
             $entityManager->flush();
@@ -35,14 +54,17 @@ class AdminController extends AbstractController
 
         return $this->render('admin/index.html.twig', [
             'formApi' => $form,
-            'allJobApiServicesJson'=>$allJobApiServicesJson
+            'allJobApiServicesJson'=>$allJobApiServicesJson,
+            'allJobSourcesJson'=>$allJobSourcesJson,
+            'allActionsJson'=>$allActionsJson,
+
         ]);
 
     }
 
 
     #[Route('/job_service/{id}', name: 'job_service_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, JobApiServices $jobApiServices, EntityManagerInterface $entityManager, Security $security): Response
+    public function jobServiceEdit(Request $request, JobApiServices $jobApiServices, EntityManagerInterface $entityManager): Response
     {
 
 
@@ -53,7 +75,7 @@ class AdminController extends AbstractController
 
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_user_show', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_admin_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('admin/job_service/edit.html.twig', [
@@ -62,11 +84,138 @@ class AdminController extends AbstractController
         ]);
     }
 
+    #[Route('/job_service/', name: 'job_service_new', methods: ['GET', 'POST'])]
+    public function jobServiceNew(Request $request,  EntityManagerInterface $entityManager): Response
+    {
+        $jobApiServices = new JobApiServices();
+
+        $form = $this->createForm(JobApiServicesType::class, $jobApiServices);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_admin_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('admin/job_service/new.html.twig', [
+            'formApi' => $form,
+        ]);
+    }
+
     #[Route('/job_service/{id}/delete', name: 'job_service_delete', methods: ['GET', 'POST'])]
-    public function delete(Request $request, JobApiServices $jobApiServices, EntityManagerInterface $entityManager, Security $security): Response
+    public function jobServiceDelete(Request $request, JobApiServices $jobApiServices, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $jobApiServices->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($jobApiServices);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_admin_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+
+    #[Route('/job_source/{id}', name: 'job_source_edit', methods: ['GET', 'POST'])]
+    public function jobSourceEdit(Request $request, JobSource $jobSource, EntityManagerInterface $entityManager): Response
+    {
+
+
+        $form = $this->createForm(JobSourceType::class, $jobSource);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_admin_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('admin/job_source/edit.html.twig', [
+            'job_source' => $jobSource,
+            'formApi' => $form,
+        ]);
+    }
+
+    #[Route('/job_source/', name: 'job_source_new', methods: ['GET', 'POST'])]
+    public function jobSourceNew(Request $request,  EntityManagerInterface $entityManager): Response
+    {
+        $jobSource = new JobSource();
+
+        $form = $this->createForm(JobSourceType::class, $jobSource);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_admin_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('admin/job_source/new.html.twig', [
+            'formApi' => $form,
+        ]);
+    }
+
+    #[Route('/job_source/{id}/delete', name: 'job_source_delete', methods: ['GET', 'POST'])]
+    public function jobSourceDelete(Request $request, JobSource $jobSource,  EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete' . $jobSource->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($jobSource);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_admin_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+
+
+    #[Route('/action/{id}', name: 'action_edit', methods: ['GET', 'POST'])]
+    public function actionEdit(Request $request,Action $action, EntityManagerInterface $entityManager): Response
+    {
+
+
+        $form = $this->createForm(AdminActionType::class, $action);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_admin_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('admin/action/edit.html.twig', [
+            'action' => $action,
+            'formApi' => $form,
+        ]);
+    }
+
+    #[Route('/action/', name: 'action_new', methods: ['GET', 'POST'])]
+    public function actionNew(Request $request,  EntityManagerInterface $entityManager): Response
+    {
+        $action = new Action();
+
+        $form = $this->createForm(AdminActionType::class, $action);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_admin_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('admin/action/new.html.twig', [
+            'formApi' => $form,
+        ]);
+    }
+
+    #[Route('/action/{id}/delete', name: 'action_delete', methods: ['GET', 'POST'])]
+    public function actionDelete(Request $request, Action $action,  EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete' . $action->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($action);
             $entityManager->flush();
         }
 

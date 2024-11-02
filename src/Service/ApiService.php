@@ -220,7 +220,7 @@ class ApiService
         $secondsUntilMidnight = $midnight->getTimestamp() - $now->getTimestamp();
 
         $cacheKey = 'user_api_' . $this->userApiSettings->getUser()->getId();
-
+        
         $cachedData = $this->cache->get($cacheKey, function (ItemInterface $item) use ($secondsUntilMidnight, $response,  $serializedUserjobApiSettings) {
             $item->expiresAfter($secondsUntilMidnight);
             foreach ($this->userApiSettings->getJobApiServices() as $userJobApiService) {
@@ -234,7 +234,6 @@ class ApiService
                     $response[] = [$apiName => 'Méthode inexistante: ' . $functionName];
                 }
             }
-
             // Retourner les paramètres et la réponse de l'API
             return [
                 'params' =>    $serializedUserjobApiSettings,

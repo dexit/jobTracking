@@ -1,13 +1,15 @@
 const { default: tinymce } = require("tinymce");
 const { generateDataTable } = require("./datatable");
 
-document.addEventListener("DOMContentLoaded", function () { 
+document.addEventListener("DOMContentLoaded", function () {
     const tableDataSelector = document.querySelector(".js-table-data");
-    const tableData = JSON.parse(tableDataSelector.getAttribute("data-table-job-api"));
+    const tableDatajobApi = JSON.parse(tableDataSelector.getAttribute("data-table-job-api"));
+    const tableDataJobSource = JSON.parse(tableDataSelector.getAttribute("data-table-job-source"));
+    const tableDataAction = JSON.parse(tableDataSelector.getAttribute("data-table-action"));
 
 
     generateDataTable(
-        tableData,
+        tableDatajobApi,
         [
             "name",
             "description",
@@ -18,8 +20,36 @@ document.addEventListener("DOMContentLoaded", function () {
         '#job-api-table',
         true,
         '/admin/job_service/#id');
+
+
+
+    generateDataTable(
+        tableDataJobSource,
+        [
+            "name",
+            "job_count",
+            "link"
+        ],
+        '#job-source-table',
+        true,
+        '/admin/job_source/#id');
     
-        tinymce.init({
-            selector: '#job_api_services_description'
-          });
+    
+
+        generateDataTable(
+            tableDataAction,
+            [
+                "name",
+                'setClosed',
+                "jobTrackings_count",
+                "link"
+            ],
+            '#action-table',
+            true,
+            '/admin/action/#id');
+
+
+
+
+
 })

@@ -1,0 +1,10 @@
+{{ form_start(formApi, {'attr' : {'data-turbo':"false" } }
+) }}
+<div class="d-flex align-items-stretch gap-3">
+        {{ form_widget(formApi.name) }}
+</div>
+
+<button class="btn btn-link" name="edit">
+    {{ button_label|default('Enregistrer') }}
+</button>
+{{ form_end(formApi) }}
