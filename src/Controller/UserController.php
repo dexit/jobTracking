@@ -22,7 +22,7 @@ final class UserController extends AbstractController
 {
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager,  UserPasswordHasherInterface $passwordHasher, Security $security, EmailService $emailService): Response
+    public function new(Request $request, EntityManagerInterface $entityManager,  UserPasswordHasherInterface $passwordHasher, Security $security, EmailService $emailService, UserRepository $userRepository): Response
     {
         if (!!$security->getUser()) {
             return $this->redirectToRoute('app_synthese');
@@ -32,6 +32,11 @@ final class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if(!empty($userRepository->findBy(['email'=> $user->getEmail()])) ){
+
+                return $this->redirectToRoute('app_forgot_password');
+            }
             $hashedPassword = $passwordHasher->hashPassword(
                 $user,
                 $user->getPassword()
@@ -57,7 +62,7 @@ final class UserController extends AbstractController
                 ])
             );
 
-            $this->addFlash('success', 'Un e-mail de confirmation a été envoyé.');
+            $this->addFlash('success', 'Un e-mail de confirmation a été envoyé. à l’adresse : ' . $user->getEmail());
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
 

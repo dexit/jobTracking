@@ -1,3 +1,5 @@
+import { titlelize } from "./utils";
+
 /**
  * 
  * @param {string} query 
@@ -23,12 +25,16 @@ export function performSearch(query, jobsArray, selectorId = 'job-list', fields 
         for (const key in job) {
             
             if (job.hasOwnProperty(key)) {
-                const regex = new RegExp(`job_${key}`, 'g');
+                const regex = new RegExp(`job_${key}`, 'gi');
                 const value = typeof job[key] === 'string' ? job[key].slice(0, 300) : job[key]
           
-                jobElement = jobElement.replaceAll(regex, value.toString());
+           
+                
+                jobElement = jobElement.replaceAll(regex, titlelize(value.toString()));
             }
         }
+
+        
         jobList.innerHTML += jobElement;
     });
 }

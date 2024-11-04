@@ -41,11 +41,7 @@ body {
 .color-grey {
   color: grey !important;
 }
-.alert {
-  position: absolute !important;
-  top: 10rem !important;
-  right: 0 !important;
-}
+
 
 main {
   top:10rem;

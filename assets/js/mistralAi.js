@@ -15,8 +15,10 @@ document.querySelector('#cover-letter').addEventListener('click', function (even
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ jobDescription, cv })
-        }).then(response =>
-            response.json())
+        })
+            .then(response =>
+                response.json()
+            )
             .then(data => {
                 coverLetter = true
                 selector.classList.remove("text-center")

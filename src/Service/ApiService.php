@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 
 class ApiService
 {
-    public function __construct(private JobSearchSettings $userApiSettings, private MistralAiService $mistralAiService, private CacheInterface $cache) {}
+    public function __construct(private JobSearchSettings $userApiSettings, private CacheInterface $cache) {}
     public function getJoobleJobs()
     {
         $params = [
@@ -199,11 +199,6 @@ class ApiService
         }
     }
 
-    public function generateCoverLetter(string $jobDescription, string $cvFilePath): string
-    {
-        return $this->mistralAiService->generateCoverLetter($jobDescription, $cvFilePath);
-    }
-
     public function getUserApiJobResults()
     {
 
@@ -220,7 +215,7 @@ class ApiService
         $secondsUntilMidnight = $midnight->getTimestamp() - $now->getTimestamp();
 
         $cacheKey = 'user_api_' . $this->userApiSettings->getUser()->getId();
-        
+
         $cachedData = $this->cache->get($cacheKey, function (ItemInterface $item) use ($secondsUntilMidnight, $response,  $serializedUserjobApiSettings) {
             $item->expiresAfter($secondsUntilMidnight);
             foreach ($this->userApiSettings->getJobApiServices() as $userJobApiService) {
@@ -234,6 +229,7 @@ class ApiService
                     $response[] = [$apiName => 'Méthode inexistante: ' . $functionName];
                 }
             }
+
             // Retourner les paramètres et la réponse de l'API
             return [
                 'params' =>    $serializedUserjobApiSettings,
