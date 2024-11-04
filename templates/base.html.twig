@@ -150,8 +150,12 @@
 
 			</footer>
 		{% endblock %}
+		
 		{{ encore_entry_script_tags('app') }}
+		{% block cookies %}
 		{% include 'cookies.html.twig' %}
+
+		{% endblock %}
 
 		{% block javascripts %}{% endblock %}
 

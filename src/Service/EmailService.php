@@ -2,13 +2,14 @@
 
 namespace App\Service;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
 class EmailService
 {
 
-    public function __construct(private MailerInterface $mailer)
+    public function __construct(private MailerInterface $mailer, private LoggerInterface $logger)
     {
     }
 
@@ -22,7 +23,10 @@ class EmailService
 
         try {
             $this->mailer->send($email);
+            $this->logger->info('Email envoyé avec succès à ' . $to);
         } catch (\Exception $e) {
+            $this->logger->error('Erreur lors de l\'envoi de l\'e-mail : ' . $e->getMessage());
+            // Gérer l'exception si nécessaire
             // Gérer l'exception si nécessaire
         }
     }
