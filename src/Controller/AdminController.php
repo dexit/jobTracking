@@ -91,11 +91,11 @@ class AdminController extends AbstractController
 
         $form = $this->createForm(JobApiServicesType::class, $jobApiServices);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $entityManager->flush();
+            $entityManager->persist($jobApiServices);
 
+            $entityManager->flush();
             return $this->redirectToRoute('app_admin_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -146,6 +146,7 @@ class AdminController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($jobSource);
 
             $entityManager->flush();
 
@@ -200,6 +201,7 @@ class AdminController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($action);
 
             $entityManager->flush();
 

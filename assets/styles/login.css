@@ -272,3 +272,12 @@
     font-size: 0.875rem;
     margin-top: 5px;
 }
+
+.alert {
+  position: absolute !important;
+  top: 10rem !important;
+  right: 0 !important;
+  z-index: 1000000;
+  padding: 10px;
+  background-color: orange;
+}

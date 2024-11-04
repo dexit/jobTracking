@@ -33,10 +33,6 @@ class MistralAiService
     public function generateCoverLetter(string $jobDescription, string $cvFilePath): string
     {
 
-
-        
-
-
         $cvContent = $this->extractTextFromPdf($cvFilePath);
         $params = [
             "model" => "mistral-small-latest",

@@ -2,6 +2,7 @@ import { generateDataTable } from "./datatable";
 import 'jquery-ui/ui/widgets/autocomplete';
 import 'jquery-ui/themes/base/autocomplete.css';
 import moment from "moment";
+import { titlelize } from "./utils";
 
 document.addEventListener("DOMContentLoaded", function () {
     const tableDataSelector = document.querySelector(".js-table-data");
@@ -45,15 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
         true,
         '/address/book/#id/edit');
 
-    function titlelize(str) {
-        if (!!str) {
-            return str
-        }
-        str = str.slice(0, 1).toUpperCase() + str.toLowerCase().slice(1);
 
-
-        return str
-    }
     $(function () {
 
         $(function () {

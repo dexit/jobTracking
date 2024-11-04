@@ -14,6 +14,8 @@ use App\Form\NoteType;
 use App\Repository\ActionRepository;
 use App\Repository\JobRepository;
 use App\Repository\JobTrackingRepository;
+use DateInterval;
+use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -85,16 +87,31 @@ class JobTrackingController extends AbstractController
 
 
         $actionId = $entityManager->getRepository(Action::class)->find($request->request->all()['action']['name']);
+
         if (!$actionId) {
             throw $this->createNotFoundException('Action ID not found in request');
         }
 
         $action = $entityManager->getRepository(Action::class)->find($actionId);
 
+        
+
         if ($job->getUser() == $security->getUser()) {
+
+            $createdAt = new DateTimeImmutable();
+
+            $jobTrackingsDate =max(array_map(function($currentJobTracking){
+                return $currentJobTracking->getCreatedAt();
+            }, $job->getJobTracking()->toArray()));
+
+           
+            if($jobTrackingsDate === $jobTrackingsDate){
+                $createdAt->add(new DateInterval('PT1S'));
+            }
+
             $jobTracking->setJob($job)
                 ->setUser($security->getUser())
-                ->setCreatedAt(new DateTimeImmutable())
+                ->setCreatedAt($createdAt)
                 ->setAction($action)
             ;
 

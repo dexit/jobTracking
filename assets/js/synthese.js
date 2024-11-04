@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   generatePieChart(labels, series,"Synthèse graphique","#chart",widthByChart)
 
-  document.getElementById('search-input').addEventListener('keyup', e => performSearch(e.target.value, tableData))
+  document.getElementById('search-input').addEventListener('keyup', e => performSearch(e.target.value, tableData,  'job-list', ['recruiter', 'title']))
 
 });
 
