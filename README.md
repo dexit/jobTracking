@@ -10,6 +10,7 @@ JobTracking is a Symfony-based application designed to help job seekers efficien
 - **Resume Upload**: Upload and store your CV for easy access and retrieval.
 - **API Integration**: Retrieve job offers directly from external sources, like Adzuna or France Travail, using their respective APIs.
 - **AI-Powered Cover Letter Generation**: Automatically generate a personalized cover letter based on your uploaded CV and the job description, making your job applications more efficient and tailored.
+- **Personal Address Book**: Manage and organize your professional contacts.
 
 ## Installation
 
@@ -56,7 +57,6 @@ Copy .env.example to .env and adjust your database and API configurations:
 - **Mistral AI API**: For cover letter generation
 
 ## Future Improvements
-- Implement user roles.
 - Expand the range of integrated job offer APIs.
 - Enable automatic follow-up reminders for job applications.
 
