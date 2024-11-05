@@ -20,7 +20,7 @@ class AdminActionType extends AbstractType
                 'min' => 1,
                 'max' => 8,
             ]],)
-            ->add('setClosed', CheckboxType::class, [])
+            ->add('setClosed', CheckboxType::class, ['required'=>false])
         ;
     }
 
@@ -28,6 +28,7 @@ class AdminActionType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Action::class,
+            
         ]);
     }
 }
