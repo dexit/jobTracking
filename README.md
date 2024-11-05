@@ -57,7 +57,6 @@ Copy .env.example to .env and adjust your database and API configurations:
 - **Mistral AI API**: For cover letter generation
 
 ## Future Improvements
-- Implement user roles.
 - Expand the range of integrated job offer APIs.
 - Enable automatic follow-up reminders for job applications.
 
