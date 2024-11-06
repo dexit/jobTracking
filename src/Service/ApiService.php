@@ -15,7 +15,9 @@ use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 
 class ApiService
 {
-    public function __construct(private JobSearchSettings $userApiSettings, private CacheInterface $cache) {}
+    public function __construct(private JobSearchSettings $userApiSettings, private CacheInterface $cache)
+    {
+    }
     public function getJoobleJobs()
     {
         $params = [
@@ -32,18 +34,22 @@ class ApiService
             'Accept' => 'application/json',
         ], 'post');
 
+        if (empty($response)) {
+            return $response;
+        }
+
         return array_map(function ($job) {
-            $apiJob  = new ApiJob;
+            $apiJob = new ApiJob;
             $apiJob
                 ->setSource('Jooble')
-                ->setTitle($job['title']  ??  $apiJob->getNoInfoStr())
+                ->setTitle($job['title'] ?? $apiJob->getNoInfoStr())
                 ->setCompany($job['company'] ?? $apiJob->getNoInfoStr())
                 ->setLocation($job['location'] ?? $apiJob->getNoInfoStr())
-                ->setDescription($job['snippet']  ?? $apiJob->getNoInfoStr())
-                ->setLink($link ?? '')
+                ->setDescription(description: $job['snippet'] ?? $apiJob->getNoInfoStr())
+                ->setLink($job['link'])
                 ->setCreated($job['updated'])
                 ->setId($job['id'])
-                ->setTypeContrat($job['type'] ??  $apiJob->getNoInfoStr())
+                ->setTypeContrat($job['type'] ?? $apiJob->getNoInfoStr())
                 ->setLogo('jooble.png')
             ;
 
@@ -51,7 +57,7 @@ class ApiService
         }, $response['jobs']);
     }
 
-    public function   getAdzunaJobs(): array
+    public function getAdzunaJobs(): array
     {
         $maxOldDays = intval($this->userApiSettings->getMaxDaysOld()) ?? 8;
 
@@ -70,13 +76,17 @@ class ApiService
 
         $url = 'https://api.adzuna.com/v1/api/jobs/fr/search/1';
 
-        $response =  $this->sendRequest($url, $params);
+        $response = $this->sendRequest($url, $params);
+
+        if (empty($response)) {
+            return $response;
+        }
         return array_map(
             function ($job) {
-                $apiJob  = new ApiJob;
+                $apiJob = new ApiJob;
                 $apiJob
                     ->setSource('Adzuna')
-                    ->setTitle($job['title']  ??  $apiJob->getNoInfoStr())
+                    ->setTitle($job['title'] ?? $apiJob->getNoInfoStr())
                     ->setCompany($job['company']['display_name'] ?? $apiJob->getNoInfoStr())
                     ->setLocation(explode(',', $job['location']['display_name'])[0] ?? $apiJob->getNoInfoStr())
                     ->setDescription($job['description'] ?? $apiJob->getNoInfoStr())
@@ -104,7 +114,7 @@ class ApiService
             'commune' => $this->userApiSettings->getCity()->getInseeCode(),     // Localisation
             'what_exclude' => $this->userApiSettings->getWhatExclude(),
             'distance' => $this->userApiSettings->getDistance(),
-            'publieeDepuis' =>  $this->findClosestValue(intval($this->userApiSettings->getMaxDaysOld()) ?? 8,   $ftMaxOlDays)
+            'publieeDepuis' => $this->findClosestValue(intval($this->userApiSettings->getMaxDaysOld()) ?? 8, $ftMaxOlDays)
         ];
 
 
@@ -116,10 +126,12 @@ class ApiService
         ];
 
 
-        $response =  $this->sendRequest($url, $params, $headers);
-
+        $response = $this->sendRequest($url, $params, $headers);
+        if (empty($response)) {
+            return $response;
+        }
         return array_map(function ($job) {
-            $apiJob  = new ApiJob;
+            $apiJob = new ApiJob;
 
             $link = 'https://candidat.francetravail.fr/offres/recherche/detail/' . $job['id'];
 
@@ -134,14 +146,14 @@ class ApiService
             }
             $apiJob
                 ->setSource('France travail')
-                ->setTitle($job['intitule']  ??  $apiJob->getNoInfoStr())
+                ->setTitle($job['intitule'] ?? $apiJob->getNoInfoStr())
                 ->setCompany($company)
-                ->setLocation(substr($job['lieuTravail']['libelle'], 4)  ?? $apiJob->getNoInfoStr())
+                ->setLocation(substr($job['lieuTravail']['libelle'], 4) ?? $apiJob->getNoInfoStr())
                 ->setDescription($job['description'] ?? $apiJob->getNoInfoStr())
                 ->setLink($link)
                 ->setCreated($job['dateCreation'])
                 ->setId($job['id'])
-                ->setTypeContrat($job['typeContratLibelle'] ??  $apiJob->getNoInfoStr())
+                ->setTypeContrat($job['typeContratLibelle'] ?? $apiJob->getNoInfoStr())
                 ->setLogo('france_travail.webp')
 
             ;
@@ -160,7 +172,7 @@ class ApiService
                 'json' => $method === 'post' ? $params : []
             ]);
 
-            $responseData = json_decode($response->getBody()->getContents(), true);
+            $responseData = json_decode($response->getBody()->getContents(), true) ?? [];
 
             return $responseData;
         } catch (\GuzzleHttp\Exception\ClientException $e) {
@@ -168,7 +180,7 @@ class ApiService
         }
     }
 
-    private  function getFranceTravailAccessToken(): string
+    private function getFranceTravailAccessToken(): string
     {
         $url = 'https://entreprise.francetravail.fr/connexion/oauth2/access_token?realm=partenaire';
 
@@ -216,7 +228,7 @@ class ApiService
 
         $cacheKey = 'user_api_' . $this->userApiSettings->getUser()->getId();
 
-        $cachedData = $this->cache->get($cacheKey, function (ItemInterface $item) use ($secondsUntilMidnight, $response,  $serializedUserjobApiSettings) {
+        $cachedData = $this->cache->get($cacheKey, function (ItemInterface $item) use ($secondsUntilMidnight, $response, $serializedUserjobApiSettings) {
             $item->expiresAfter($secondsUntilMidnight);
             foreach ($this->userApiSettings->getJobApiServices() as $userJobApiService) {
                 $functionName = $userJobApiService->getFunctionName();
@@ -232,7 +244,7 @@ class ApiService
 
             // Retourner les paramètres et la réponse de l'API
             return [
-                'params' =>    $serializedUserjobApiSettings,
+                'params' => $serializedUserjobApiSettings,
                 'response' => $response,
             ];
         });
@@ -254,7 +266,7 @@ class ApiService
                 }
 
                 $cachedData = [
-                    'params' =>    $serializedUserjobApiSettings,
+                    'params' => $serializedUserjobApiSettings,
                     'response' => $response,
                 ];
             }
@@ -270,11 +282,13 @@ class ApiService
 
         $apiResponse = array_map(
             function ($job) {
-                $job['created']=  $job['created']->format('d/m/y');
+                $job['created'] = $job['created']->format('d/m/y');
                 return $job;
             }
-        , $cachedData['response']);
-        return    $apiResponse;
+            ,
+            $cachedData['response']
+        );
+        return $apiResponse;
     }
     private function findClosestValue($value, $array)
     {
